@@ -7,5 +7,5 @@ SELECT entry_id,
        last_modified_by,
        last_modified_date
 FROM entry
-WHERE ? = ANY (tags)
+WHERE tags @> ARRAY[?]
 ORDER BY last_modified_date DESC
