@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS entry
     content            TEXT                     NOT NULL,
     tags               VARCHAR(64) ARRAY        NOT NULL DEFAULT ARRAY [],
     created_by         VARCHAR(128)             NOT NULL DEFAULT 'system',
-    created_date       TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    created_date       TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     last_modified_by   VARCHAR(128)             NOT NULL DEFAULT 'system',
-    last_modified_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    last_modified_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     PRIMARY KEY (entry_id)
 );
