@@ -13,4 +13,4 @@ CREATE TABLE IF NOT EXISTS entry
     PRIMARY KEY (entry_id)
 );
 
-CREATE INDEX IF NOT EXISTS entry_last_modified_date ON entry (last_modified_date);
+CREATE INDEX IF NOT EXISTS entry_last_modified_date ON entry (last_modified_date DESC);
