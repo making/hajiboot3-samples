@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import hajiboot.util.FileLoader;
+
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -36,62 +38,28 @@ public class EntryMapper {
 	};
 
 	public Optional<Entry> findOne(Integer entryId) {
-		String sql = """
-				SELECT entry_id,
-				       title,
-				       content,
-				       tags,
-				       created_by,
-				       created_date,
-				       last_modified_by,
-				       last_modified_date
-				FROM entry
-				WHERE entry_id = ?
-				""";
+		String sql = FileLoader.loadSqlAsString("hajiboot/entry/EntryMapper/findOne.sql");
 		return Optional.ofNullable(DataAccessUtils.uniqueResult(this.jdbcTemplate.query(sql, this.rowMapper, entryId)));
 	}
 
 	public List<Entry> findAll() {
-		String sql = """
-				SELECT entry_id,
-				       title,
-				       '' AS content,
-				       tags,
-				       created_by,
-				       created_date,
-				       last_modified_by,
-				       last_modified_date
-				FROM entry
-				ORDER BY last_modified_date DESC
-				""";
+		String sql = FileLoader.loadSqlAsString("hajiboot/entry/EntryMapper/findAll.sql");
 		return this.jdbcTemplate.query(sql, this.rowMapper);
 	}
 
 	public List<Entry> findByTag(Tag tag) {
-		String sql = """
-				SELECT entry_id,
-				       title,
-				       '' AS content,
-				       tags,
-				       created_by,
-				       created_date,
-				       last_modified_by,
-				       last_modified_date
-				FROM entry
-				WHERE ARRAY_CONTAINS(tags, ?)
-				ORDER BY last_modified_date DESC
-				""";
+		String sql = FileLoader.loadSqlAsString("hajiboot/entry/EntryMapper/findByTag.sql");
 		return this.jdbcTemplate.query(sql, this.rowMapper, tag.name());
 	}
 
 	public Integer nextEntryId() {
-		String sql = "SELECT nextval('entry_id_seq')";
+		String sql = FileLoader.loadSqlAsString("hajiboot/entry/EntryMapper/nextEntryId.sql");
 		return this.jdbcTemplate.queryForObject(sql, Integer.class);
 	}
 
 	@Transactional
 	public int insert(Entry entry) {
-		String sql = "INSERT INTO entry(entry_id, title, content, tags, created_by, created_date, last_modified_by, last_modified_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = FileLoader.loadSqlAsString("hajiboot/entry/EntryMapper/insert.sql");
 		return this.jdbcTemplate.update(sql, entry.entryId(), entry.title(), entry.content(),
 				entry.tags().stream().map(Tag::name).toArray(),
 				entry.created().name(), entry.created().toTimestamp(),
@@ -100,7 +68,7 @@ public class EntryMapper {
 
 	@Transactional
 	public int update(Entry entry) {
-		String sql = "UPDATE entry SET title = ?, content = ?, tags = ?, created_by = ?, created_date = ?, last_modified_by = ?, last_modified_date = ? WHERE entry_id = ?";
+		String sql = FileLoader.loadSqlAsString("hajiboot/entry/EntryMapper/update.sql");
 		return this.jdbcTemplate.update(sql, entry.title(), entry.content(),
 				entry.tags().stream().map(Tag::name).toArray(), entry.created().name(), entry.created().toTimestamp(),
 				entry.lastModified().name(), entry.lastModified().toTimestamp(), entry.entryId());
@@ -108,12 +76,13 @@ public class EntryMapper {
 
 	@Transactional
 	public int delete(Integer entryId) {
-		return this.jdbcTemplate.update("DELETE FROM entry WHERE  entry_id = ?", entryId);
+		String sql = FileLoader.loadSqlAsString("hajiboot/entry/EntryMapper/delete.sql");
+		return this.jdbcTemplate.update(sql, entryId);
 	}
 
 	@Transactional
 	public int insertAll(List<Entry> entries) {
-		String sql = "INSERT INTO entry(entry_id, title, content, tags, created_by, created_date, last_modified_by, last_modified_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = FileLoader.loadSqlAsString("hajiboot/entry/EntryMapper/insert.sql");
 		final int[] updated = this.jdbcTemplate.batchUpdate(sql, entries.stream()
 				.map(entry -> new Object[] { entry.entryId(), entry.title(), entry.content(),
 						entry.tags().stream().map(Tag::name).toArray(), entry.created().name(), entry.created().toTimestamp(),
