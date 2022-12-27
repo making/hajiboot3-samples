@@ -94,16 +94,16 @@ public class EntryMapper {
 		String sql = "INSERT INTO entry(entry_id, title, content, tags, created_by, created_date, last_modified_by, last_modified_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 		return this.jdbcTemplate.update(sql, entry.entryId(), entry.title(), entry.content(),
 				entry.tags().stream().map(Tag::name).toArray(),
-				entry.created().name(), entry.created().date(),
-				entry.lastModified().name(), entry.lastModified().date());
+				entry.created().name(), entry.created().toTimestamp(),
+				entry.lastModified().name(), entry.lastModified().toTimestamp());
 	}
 
 	@Transactional
 	public int update(Entry entry) {
 		String sql = "UPDATE entry SET title = ?, content = ?, tags = ?, created_by = ?, created_date = ?, last_modified_by = ?, last_modified_date = ? WHERE entry_id = ?";
 		return this.jdbcTemplate.update(sql, entry.title(), entry.content(),
-				entry.tags().stream().map(Tag::name).toArray(), entry.created().name(), entry.created().date(),
-				entry.lastModified().name(), entry.lastModified().date(), entry.entryId());
+				entry.tags().stream().map(Tag::name).toArray(), entry.created().name(), entry.created().toTimestamp(),
+				entry.lastModified().name(), entry.lastModified().toTimestamp(), entry.entryId());
 	}
 
 	@Transactional
@@ -116,8 +116,8 @@ public class EntryMapper {
 		String sql = "INSERT INTO entry(entry_id, title, content, tags, created_by, created_date, last_modified_by, last_modified_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 		final int[] updated = this.jdbcTemplate.batchUpdate(sql, entries.stream()
 				.map(entry -> new Object[] { entry.entryId(), entry.title(), entry.content(),
-						entry.tags().stream().map(Tag::name).toArray(), entry.created().name(), entry.created().date(),
-						entry.lastModified().name(), entry.lastModified().date() })
+						entry.tags().stream().map(Tag::name).toArray(), entry.created().name(), entry.created().toTimestamp(),
+						entry.lastModified().name(), entry.lastModified().toTimestamp() })
 				.toList());
 		return Arrays.stream(updated).sum();
 	}
