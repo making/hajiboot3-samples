@@ -12,3 +12,5 @@ CREATE TABLE IF NOT EXISTS entry
     last_modified_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     PRIMARY KEY (entry_id)
 );
+
+CREATE INDEX IF NOT EXISTS entry_last_modified_date ON entry (last_modified_date);
