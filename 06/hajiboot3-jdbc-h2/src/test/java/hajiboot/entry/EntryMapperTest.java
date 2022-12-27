@@ -79,4 +79,22 @@ class EntryMapperTest {
 		List<Entry> entries = this.entryMapper.findAll();
 		assertThat(entries).containsExactly(entry3.withContent(""), entry2.withContent(""), entry1.withContent(""));
 	}
+
+	@Test
+	void findByTags() {
+		Entry entry1 = fixture(this.entryMapper.nextEntryId())
+				.withTags(Set.of(new Tag("a"), new Tag("b")));
+		Entry entry2 = fixture(this.entryMapper.nextEntryId())
+				.withTags(Set.of(new Tag("b"), new Tag("c")));
+		Entry entry3 = fixture(this.entryMapper.nextEntryId())
+				.withTags(Set.of(new Tag("c"), new Tag("a")));
+		this.entryMapper.insertAll(List.of(entry1, entry2, entry3));
+
+		assertThat(this.entryMapper.findByTag(new Tag("a")))
+				.containsExactly(entry3.withContent(""), entry1.withContent(""));
+		assertThat(this.entryMapper.findByTag(new Tag("b")))
+				.containsExactly(entry2.withContent(""), entry1.withContent(""));
+		assertThat(this.entryMapper.findByTag(new Tag("c")))
+				.containsExactly(entry3.withContent(""), entry2.withContent(""));
+	}
 }

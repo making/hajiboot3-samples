@@ -67,6 +67,23 @@ public class EntryMapper {
 		return this.jdbcTemplate.query(sql, this.rowMapper);
 	}
 
+	public List<Entry> findByTag(Tag tag) {
+		String sql = """
+				SELECT entry_id,
+				       title,
+				       '' AS content,
+				       tags,
+				       created_by,
+				       created_date,
+				       last_modified_by,
+				       last_modified_date
+				FROM entry
+				WHERE ARRAY_CONTAINS(tags, ?)
+				ORDER BY last_modified_date DESC
+				""";
+		return this.jdbcTemplate.query(sql, this.rowMapper, tag.name());
+	}
+
 	public Integer nextEntryId() {
 		String sql = "SELECT nextval('entry_id_seq')";
 		return this.jdbcTemplate.queryForObject(sql, Integer.class);
