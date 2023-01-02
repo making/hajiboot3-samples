@@ -6,14 +6,14 @@ import java.util.function.Function;
 public record CursorPage<T, C>(List<T> content, int size, Function<T, C> toCursor,
 							   boolean hasPrevious, boolean hasNext) {
 
-	public C tailCursor() {
+	public C tail() {
 		if (this.content.isEmpty()) {
 			return null;
 		}
 		return toCursor.apply(this.content.get(0));
 	}
 
-	public C headCursor() {
+	public C head() {
 		if (this.content.isEmpty()) {
 			return null;
 		}

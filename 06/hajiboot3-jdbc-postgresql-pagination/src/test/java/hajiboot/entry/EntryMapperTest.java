@@ -196,24 +196,24 @@ class EntryMapperTest {
 		assertThat(page0.size()).isEqualTo(2);
 		assertThat(page0.hasNext()).isTrue();
 		assertThat(page0.hasPrevious()).isFalse();
-		assertThat(page0.tailCursor()).isEqualTo(entry5.lastModified().date());
-		assertThat(page0.headCursor()).isEqualTo(entry4.lastModified().date());
+		assertThat(page0.tail()).isEqualTo(entry5.lastModified().date());
+		assertThat(page0.head()).isEqualTo(entry4.lastModified().date());
 
-		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.headCursor(), 2, Navigation.NEXT));
+		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.head(), 2, Navigation.NEXT));
 		assertThat(page1.content()).containsExactly(entry3.withContent(""), entry2.withContent(""));
 		assertThat(page1.size()).isEqualTo(2);
 		assertThat(page1.hasNext()).isTrue();
 		assertThat(page1.hasPrevious()).isTrue();
-		assertThat(page1.tailCursor()).isEqualTo(entry3.lastModified().date());
-		assertThat(page1.headCursor()).isEqualTo(entry2.lastModified().date());
+		assertThat(page1.tail()).isEqualTo(entry3.lastModified().date());
+		assertThat(page1.head()).isEqualTo(entry2.lastModified().date());
 
-		CursorPage<Entry, Instant> page2 = this.entryMapper.findAll(new CursorPageRequest<>(page1.headCursor(), 2, Navigation.NEXT));
+		CursorPage<Entry, Instant> page2 = this.entryMapper.findAll(new CursorPageRequest<>(page1.head(), 2, Navigation.NEXT));
 		assertThat(page2.content()).containsExactly(entry1.withContent(""));
 		assertThat(page2.size()).isEqualTo(2);
 		assertThat(page2.hasNext()).isFalse();
 		assertThat(page2.hasPrevious()).isTrue();
-		assertThat(page2.tailCursor()).isEqualTo(entry1.lastModified().date());
-		assertThat(page2.headCursor()).isEqualTo(entry1.lastModified().date());
+		assertThat(page2.tail()).isEqualTo(entry1.lastModified().date());
+		assertThat(page2.head()).isEqualTo(entry1.lastModified().date());
 	}
 
 	@Test
@@ -230,16 +230,16 @@ class EntryMapperTest {
 		assertThat(page0.size()).isEqualTo(2);
 		assertThat(page0.hasNext()).isTrue();
 		assertThat(page0.hasPrevious()).isFalse();
-		assertThat(page0.tailCursor()).isEqualTo(entry5.lastModified().date());
-		assertThat(page0.headCursor()).isEqualTo(entry4.lastModified().date());
+		assertThat(page0.tail()).isEqualTo(entry5.lastModified().date());
+		assertThat(page0.head()).isEqualTo(entry4.lastModified().date());
 
-		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.headCursor(), 2, Navigation.NEXT));
+		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.head(), 2, Navigation.NEXT));
 		assertThat(page1.content()).containsExactly(entry3.withContent(""), entry2.withContent(""));
 		assertThat(page1.size()).isEqualTo(2);
 		assertThat(page1.hasNext()).isFalse();
 		assertThat(page1.hasPrevious()).isTrue();
-		assertThat(page1.tailCursor()).isEqualTo(entry3.lastModified().date());
-		assertThat(page1.headCursor()).isEqualTo(entry2.lastModified().date());
+		assertThat(page1.tail()).isEqualTo(entry3.lastModified().date());
+		assertThat(page1.head()).isEqualTo(entry2.lastModified().date());
 	}
 
 	@Test
@@ -265,24 +265,24 @@ class EntryMapperTest {
 		assertThat(page0.size()).isEqualTo(2);
 		assertThat(page0.hasNext()).isFalse();
 		assertThat(page0.hasPrevious()).isTrue();
-		assertThat(page0.tailCursor()).isEqualTo(entry2.lastModified().date());
-		assertThat(page0.headCursor()).isEqualTo(entry1.lastModified().date());
+		assertThat(page0.tail()).isEqualTo(entry2.lastModified().date());
+		assertThat(page0.head()).isEqualTo(entry1.lastModified().date());
 
-		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.tailCursor(), 2, Navigation.PREVIOUS));
+		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.tail(), 2, Navigation.PREVIOUS));
 		assertThat(page1.content()).containsExactly(entry4.withContent(""), entry3.withContent(""));
 		assertThat(page1.size()).isEqualTo(2);
 		assertThat(page1.hasNext()).isTrue();
 		assertThat(page1.hasPrevious()).isTrue();
-		assertThat(page1.tailCursor()).isEqualTo(entry4.lastModified().date());
-		assertThat(page1.headCursor()).isEqualTo(entry3.lastModified().date());
+		assertThat(page1.tail()).isEqualTo(entry4.lastModified().date());
+		assertThat(page1.head()).isEqualTo(entry3.lastModified().date());
 
-		CursorPage<Entry, Instant> page2 = this.entryMapper.findAll(new CursorPageRequest<>(page1.tailCursor(), 2, Navigation.PREVIOUS));
+		CursorPage<Entry, Instant> page2 = this.entryMapper.findAll(new CursorPageRequest<>(page1.tail(), 2, Navigation.PREVIOUS));
 		assertThat(page2.content()).containsExactly(entry5.withContent(""));
 		assertThat(page2.size()).isEqualTo(2);
 		assertThat(page2.hasNext()).isTrue();
 		assertThat(page2.hasPrevious()).isFalse();
-		assertThat(page2.tailCursor()).isEqualTo(entry5.lastModified().date());
-		assertThat(page2.headCursor()).isEqualTo(entry5.lastModified().date());
+		assertThat(page2.tail()).isEqualTo(entry5.lastModified().date());
+		assertThat(page2.head()).isEqualTo(entry5.lastModified().date());
 	}
 
 	@Test
@@ -299,15 +299,15 @@ class EntryMapperTest {
 		assertThat(page0.size()).isEqualTo(2);
 		assertThat(page0.hasNext()).isFalse();
 		assertThat(page0.hasPrevious()).isTrue();
-		assertThat(page0.tailCursor()).isEqualTo(entry2.lastModified().date());
-		assertThat(page0.headCursor()).isEqualTo(entry1.lastModified().date());
+		assertThat(page0.tail()).isEqualTo(entry2.lastModified().date());
+		assertThat(page0.head()).isEqualTo(entry1.lastModified().date());
 
-		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.tailCursor(), 2, Navigation.PREVIOUS));
+		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.tail(), 2, Navigation.PREVIOUS));
 		assertThat(page1.content()).containsExactly(entry4.withContent(""), entry3.withContent(""));
 		assertThat(page1.size()).isEqualTo(2);
 		assertThat(page1.hasNext()).isTrue();
 		assertThat(page1.hasPrevious()).isFalse();
-		assertThat(page1.tailCursor()).isEqualTo(entry4.lastModified().date());
-		assertThat(page1.headCursor()).isEqualTo(entry3.lastModified().date());
+		assertThat(page1.tail()).isEqualTo(entry4.lastModified().date());
+		assertThat(page1.head()).isEqualTo(entry3.lastModified().date());
 	}
 }
