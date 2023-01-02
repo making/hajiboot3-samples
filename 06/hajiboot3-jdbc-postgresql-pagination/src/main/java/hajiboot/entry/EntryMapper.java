@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import hajiboot.pagination.CursorPage;
 import hajiboot.pagination.CursorPageRequest;
-import hajiboot.pagination.CursorPageRequest.Direction;
+import hajiboot.pagination.CursorPageRequest.Navigation;
 import hajiboot.pagination.OffsetPage;
 import hajiboot.pagination.OffsetPageRequest;
 import hajiboot.util.FileLoader;
@@ -70,15 +70,15 @@ public class EntryMapper {
 
 	public CursorPage<Entry, Instant> findAll(CursorPageRequest<Instant> pageRequest) {
 		Optional<Instant> cursor = pageRequest.cursorOptional();
-		Direction direction = Objects.requireNonNull(pageRequest.direction());
+		Navigation navigation = Objects.requireNonNull(pageRequest.navigation());
 		int pageSizePlus1 = pageRequest.pageSize() + 1;
-		String sql = FileLoader.loadSqlAsString(direction == Direction.DESC ? "hajiboot/entry/EntryMapper/findAllCursorDesc.sql" : "hajiboot/entry/EntryMapper/findAllCursorAsc.sql")
+		String sql = FileLoader.loadSqlAsString(navigation.isNext() ? "hajiboot/entry/EntryMapper/findAllCursorPrevious.sql" : "hajiboot/entry/EntryMapper/findAllCursorNext.sql")
 				.formatted(pageSizePlus1);
 		List<Entry> contentPlus1 = this.jdbcTemplate.query(sql, this.rowMapper, cursor.map(Timestamp::from).orElse(null));
 		boolean hasPrevious;
 		boolean hasNext;
 		List<Entry> content;
-		if (direction == Direction.DESC) {
+		if (navigation.isNext()) {
 			hasPrevious = cursor.isPresent();
 			hasNext = contentPlus1.size() == pageSizePlus1;
 			content = hasNext ? contentPlus1.subList(0, pageRequest.pageSize()) : contentPlus1;

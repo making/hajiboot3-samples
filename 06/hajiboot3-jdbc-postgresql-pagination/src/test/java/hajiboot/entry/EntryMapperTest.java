@@ -7,7 +7,7 @@ import java.util.Set;
 
 import hajiboot.pagination.CursorPage;
 import hajiboot.pagination.CursorPageRequest;
-import hajiboot.pagination.CursorPageRequest.Direction;
+import hajiboot.pagination.CursorPageRequest.Navigation;
 import hajiboot.pagination.OffsetPage;
 import hajiboot.pagination.OffsetPageRequest;
 import org.junit.jupiter.api.Test;
@@ -140,12 +140,9 @@ class EntryMapperTest {
 
 	@Test
 	void findAllOffset() {
-		Entry entry1 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("a"), new Tag("b")));
-		Entry entry2 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("b"), new Tag("c")));
-		Entry entry3 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
+		Entry entry1 = fixture(this.entryMapper.nextEntryId());
+		Entry entry2 = fixture(this.entryMapper.nextEntryId());
+		Entry entry3 = fixture(this.entryMapper.nextEntryId());
 		this.entryMapper.insertAll(List.of(entry1, entry2, entry3));
 
 		OffsetPage<Entry> page0 = this.entryMapper.findAll(new OffsetPageRequest(0, 2));
@@ -177,8 +174,8 @@ class EntryMapperTest {
 	}
 
 	@Test
-	void findAllCursorDesc_empty() {
-		CursorPage<Entry, Instant> page = this.entryMapper.findAll(new CursorPageRequest<>(null, 10, Direction.DESC));
+	void findAllCursorNext_empty() {
+		CursorPage<Entry, Instant> page = this.entryMapper.findAll(new CursorPageRequest<>(null, 10, Navigation.NEXT));
 		assertThat(page.content()).isEmpty();
 		assertThat(page.size()).isEqualTo(10);
 		assertThat(page.hasNext()).isFalse();
@@ -186,20 +183,15 @@ class EntryMapperTest {
 	}
 
 	@Test
-	void findAllCursorDesc() {
-		Entry entry1 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("a"), new Tag("b")));
-		Entry entry2 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("b"), new Tag("c")));
-		Entry entry3 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
-		Entry entry4 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
-		Entry entry5 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
+	void findAllCursorNext() {
+		Entry entry1 = fixture(this.entryMapper.nextEntryId());
+		Entry entry2 = fixture(this.entryMapper.nextEntryId());
+		Entry entry3 = fixture(this.entryMapper.nextEntryId());
+		Entry entry4 = fixture(this.entryMapper.nextEntryId());
+		Entry entry5 = fixture(this.entryMapper.nextEntryId());
 		this.entryMapper.insertAll(List.of(entry1, entry2, entry3, entry4, entry5));
 
-		CursorPage<Entry, Instant> page0 = this.entryMapper.findAll(new CursorPageRequest<>(null, 2, Direction.DESC));
+		CursorPage<Entry, Instant> page0 = this.entryMapper.findAll(new CursorPageRequest<>(null, 2, Navigation.NEXT));
 		assertThat(page0.content()).containsExactly(entry5.withContent(""), entry4.withContent(""));
 		assertThat(page0.size()).isEqualTo(2);
 		assertThat(page0.hasNext()).isTrue();
@@ -207,7 +199,7 @@ class EntryMapperTest {
 		assertThat(page0.tailCursor()).isEqualTo(entry5.lastModified().date());
 		assertThat(page0.headCursor()).isEqualTo(entry4.lastModified().date());
 
-		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.headCursor(), 2, Direction.DESC));
+		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.headCursor(), 2, Navigation.NEXT));
 		assertThat(page1.content()).containsExactly(entry3.withContent(""), entry2.withContent(""));
 		assertThat(page1.size()).isEqualTo(2);
 		assertThat(page1.hasNext()).isTrue();
@@ -215,7 +207,7 @@ class EntryMapperTest {
 		assertThat(page1.tailCursor()).isEqualTo(entry3.lastModified().date());
 		assertThat(page1.headCursor()).isEqualTo(entry2.lastModified().date());
 
-		CursorPage<Entry, Instant> page2 = this.entryMapper.findAll(new CursorPageRequest<>(page1.headCursor(), 2, Direction.DESC));
+		CursorPage<Entry, Instant> page2 = this.entryMapper.findAll(new CursorPageRequest<>(page1.headCursor(), 2, Navigation.NEXT));
 		assertThat(page2.content()).containsExactly(entry1.withContent(""));
 		assertThat(page2.size()).isEqualTo(2);
 		assertThat(page2.hasNext()).isFalse();
@@ -225,18 +217,15 @@ class EntryMapperTest {
 	}
 
 	@Test
-	void findAllCursorDesc_exact2Page() {
-		Entry entry2 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("b"), new Tag("c")));
-		Entry entry3 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
-		Entry entry4 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
-		Entry entry5 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
+	void findAllCursorNext_exact2Page() {
+		Entry entry1 = fixture(this.entryMapper.nextEntryId());
+		Entry entry2 = fixture(this.entryMapper.nextEntryId());
+		Entry entry3 = fixture(this.entryMapper.nextEntryId());
+		Entry entry4 = fixture(this.entryMapper.nextEntryId());
+		Entry entry5 = fixture(this.entryMapper.nextEntryId());
 		this.entryMapper.insertAll(List.of(entry2, entry3, entry4, entry5));
 
-		CursorPage<Entry, Instant> page0 = this.entryMapper.findAll(new CursorPageRequest<>(null, 2, Direction.DESC));
+		CursorPage<Entry, Instant> page0 = this.entryMapper.findAll(new CursorPageRequest<>(null, 2, Navigation.NEXT));
 		assertThat(page0.content()).containsExactly(entry5.withContent(""), entry4.withContent(""));
 		assertThat(page0.size()).isEqualTo(2);
 		assertThat(page0.hasNext()).isTrue();
@@ -244,7 +233,7 @@ class EntryMapperTest {
 		assertThat(page0.tailCursor()).isEqualTo(entry5.lastModified().date());
 		assertThat(page0.headCursor()).isEqualTo(entry4.lastModified().date());
 
-		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.headCursor(), 2, Direction.DESC));
+		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.headCursor(), 2, Navigation.NEXT));
 		assertThat(page1.content()).containsExactly(entry3.withContent(""), entry2.withContent(""));
 		assertThat(page1.size()).isEqualTo(2);
 		assertThat(page1.hasNext()).isFalse();
@@ -254,8 +243,8 @@ class EntryMapperTest {
 	}
 
 	@Test
-	void findAllCursorAsc_empty() {
-		CursorPage<Entry, Instant> page = this.entryMapper.findAll(new CursorPageRequest<>(null, 10, Direction.ASC));
+	void findAllCursorPrevious_empty() {
+		CursorPage<Entry, Instant> page = this.entryMapper.findAll(new CursorPageRequest<>(null, 10, Navigation.PREVIOUS));
 		assertThat(page.content()).isEmpty();
 		assertThat(page.size()).isEqualTo(10);
 		assertThat(page.hasNext()).isFalse();
@@ -263,20 +252,15 @@ class EntryMapperTest {
 	}
 
 	@Test
-	void findAllCursorAsc() {
-		Entry entry1 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("a"), new Tag("b")));
-		Entry entry2 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("b"), new Tag("c")));
-		Entry entry3 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
-		Entry entry4 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
-		Entry entry5 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
+	void findAllCursorPrevious() {
+		Entry entry1 = fixture(this.entryMapper.nextEntryId());
+		Entry entry2 = fixture(this.entryMapper.nextEntryId());
+		Entry entry3 = fixture(this.entryMapper.nextEntryId());
+		Entry entry4 = fixture(this.entryMapper.nextEntryId());
+		Entry entry5 = fixture(this.entryMapper.nextEntryId());
 		this.entryMapper.insertAll(List.of(entry1, entry2, entry3, entry4, entry5));
 
-		CursorPage<Entry, Instant> page0 = this.entryMapper.findAll(new CursorPageRequest<>(null, 2, Direction.ASC));
+		CursorPage<Entry, Instant> page0 = this.entryMapper.findAll(new CursorPageRequest<>(null, 2, Navigation.PREVIOUS));
 		assertThat(page0.content()).containsExactly(entry2.withContent(""), entry1.withContent(""));
 		assertThat(page0.size()).isEqualTo(2);
 		assertThat(page0.hasNext()).isFalse();
@@ -284,7 +268,7 @@ class EntryMapperTest {
 		assertThat(page0.tailCursor()).isEqualTo(entry2.lastModified().date());
 		assertThat(page0.headCursor()).isEqualTo(entry1.lastModified().date());
 
-		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.tailCursor(), 2, Direction.ASC));
+		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.tailCursor(), 2, Navigation.PREVIOUS));
 		assertThat(page1.content()).containsExactly(entry4.withContent(""), entry3.withContent(""));
 		assertThat(page1.size()).isEqualTo(2);
 		assertThat(page1.hasNext()).isTrue();
@@ -292,7 +276,7 @@ class EntryMapperTest {
 		assertThat(page1.tailCursor()).isEqualTo(entry4.lastModified().date());
 		assertThat(page1.headCursor()).isEqualTo(entry3.lastModified().date());
 
-		CursorPage<Entry, Instant> page2 = this.entryMapper.findAll(new CursorPageRequest<>(page1.tailCursor(), 2, Direction.ASC));
+		CursorPage<Entry, Instant> page2 = this.entryMapper.findAll(new CursorPageRequest<>(page1.tailCursor(), 2, Navigation.PREVIOUS));
 		assertThat(page2.content()).containsExactly(entry5.withContent(""));
 		assertThat(page2.size()).isEqualTo(2);
 		assertThat(page2.hasNext()).isTrue();
@@ -302,18 +286,15 @@ class EntryMapperTest {
 	}
 
 	@Test
-	void findAllCursorAsc_exact2Page() {
-		Entry entry1 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("a"), new Tag("b")));
-		Entry entry2 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("b"), new Tag("c")));
-		Entry entry3 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
-		Entry entry4 = fixture(this.entryMapper.nextEntryId())
-				.withTags(Set.of(new Tag("c"), new Tag("a")));
+	void findAllCursorPrevious_exact2Page() {
+		Entry entry1 = fixture(this.entryMapper.nextEntryId());
+		Entry entry2 = fixture(this.entryMapper.nextEntryId());
+		Entry entry3 = fixture(this.entryMapper.nextEntryId());
+		Entry entry4 = fixture(this.entryMapper.nextEntryId());
+		Entry entry5 = fixture(this.entryMapper.nextEntryId());
 		this.entryMapper.insertAll(List.of(entry1, entry2, entry3, entry4));
 
-		CursorPage<Entry, Instant> page0 = this.entryMapper.findAll(new CursorPageRequest<>(null, 2, Direction.ASC));
+		CursorPage<Entry, Instant> page0 = this.entryMapper.findAll(new CursorPageRequest<>(null, 2, Navigation.PREVIOUS));
 		assertThat(page0.content()).containsExactly(entry2.withContent(""), entry1.withContent(""));
 		assertThat(page0.size()).isEqualTo(2);
 		assertThat(page0.hasNext()).isFalse();
@@ -321,7 +302,7 @@ class EntryMapperTest {
 		assertThat(page0.tailCursor()).isEqualTo(entry2.lastModified().date());
 		assertThat(page0.headCursor()).isEqualTo(entry1.lastModified().date());
 
-		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.tailCursor(), 2, Direction.ASC));
+		CursorPage<Entry, Instant> page1 = this.entryMapper.findAll(new CursorPageRequest<>(page0.tailCursor(), 2, Navigation.PREVIOUS));
 		assertThat(page1.content()).containsExactly(entry4.withContent(""), entry3.withContent(""));
 		assertThat(page1.size()).isEqualTo(2);
 		assertThat(page1.hasNext()).isTrue();
