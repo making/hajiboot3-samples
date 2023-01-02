@@ -72,7 +72,7 @@ public class EntryMapper {
 		Optional<Instant> cursor = pageRequest.cursorOptional();
 		Navigation navigation = Objects.requireNonNull(pageRequest.navigation());
 		int pageSizePlus1 = pageRequest.pageSize() + 1;
-		String sql = FileLoader.loadSqlAsString(navigation.isNext() ? "hajiboot/entry/EntryMapper/findAllCursorPrevious.sql" : "hajiboot/entry/EntryMapper/findAllCursorNext.sql")
+		String sql = FileLoader.loadSqlAsString(navigation.isNext() ? "hajiboot/entry/EntryMapper/findAllCursorNext.sql" : "hajiboot/entry/EntryMapper/findAllCursorPrevious.sql")
 				.formatted(pageSizePlus1);
 		List<Entry> contentPlus1 = this.jdbcTemplate.query(sql, this.rowMapper, cursor.map(Timestamp::from).orElse(null));
 		boolean hasPrevious;
