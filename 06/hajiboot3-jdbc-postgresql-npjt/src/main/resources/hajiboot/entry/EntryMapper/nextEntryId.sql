@@ -1,0 +1,1 @@
+SELECT nextval('entry_id_seq')
