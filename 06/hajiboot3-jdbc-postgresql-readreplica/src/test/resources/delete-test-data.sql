@@ -1,0 +1,1 @@
+DELETE FROM entry WHERE content LIKE 'Test%'
