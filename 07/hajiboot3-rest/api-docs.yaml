@@ -1,0 +1,282 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /entries:
+    get:
+      tags:
+      - entry
+      operationId: getEntries
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OffsetPageEntry'
+    post:
+      tags:
+      - entry
+      operationId: postEntries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntryCreateRequest'
+        required: true
+      responses:
+        "201":
+          description: Created
+          headers:
+            Location:
+              required: true
+              style: simple
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+  /entries/{entryId}:
+    get:
+      tags:
+      - entry
+      operationId: getEntry
+      parameters:
+      - name: entryId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: If-Modified-Since
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            Cache-Control:
+              required: true
+              style: simple
+              schema:
+                type: string
+            Last-Modified:
+              required: true
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+        "304":
+          description: Not Modified
+          headers:
+            Cache-Control:
+              required: true
+              style: simple
+              schema:
+                type: string
+            Last-Modified:
+              required: true
+              style: simple
+              schema:
+                type: string
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+    delete:
+      tags:
+      - entry
+      operationId: deleteEntry
+      parameters:
+      - name: entryId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "204":
+          description: No Content
+    patch:
+      tags:
+      - entry
+      operationId: patchEntry
+      parameters:
+      - name: entryId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntryUpdateRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          headers:
+            Cache-Control:
+              required: true
+              style: simple
+              schema:
+                type: string
+            Last-Modified:
+              required: true
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+        "404":
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+components:
+  schemas:
+    EntryCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        tags:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+      example:
+        title: Hello World!
+        content: This is an example entry!
+        tags:
+        - name: Tag 1
+        - name: Tag 2
+    Tag:
+      type: object
+      properties:
+        name:
+          type: string
+    Entry:
+      type: object
+      properties:
+        entryId:
+          type: integer
+          format: int32
+        title:
+          type: string
+        content:
+          type: string
+        tags:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        created:
+          $ref: '#/components/schemas/UpdateMeta'
+        lastModified:
+          $ref: '#/components/schemas/UpdateMeta'
+      example:
+        entryId: 100
+        title: Hello World!
+        content: This is an example entry!
+        tags:
+        - name: Tag 1
+        - name: Tag 2
+        created:
+          name: system
+          date: 2023-02-18T00:00:00Z
+        lastModified:
+          name: system
+          date: 2023-02-19T00:00:00Z
+    UpdateMeta:
+      type: object
+      properties:
+        name:
+          type: string
+        date:
+          type: string
+          format: date-time
+    EntryUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        tags:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+      example:
+        title: Hello World!
+        content: This is an example entry!
+        tags:
+        - name: Tag 1
+        - name: Tag 2
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+    OffsetPageEntry:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entry'
+        size:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
