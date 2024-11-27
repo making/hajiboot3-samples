@@ -1,18 +1,19 @@
 package hajiboot;
 
+import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 
-import org.springframework.stereotype.Component;
-import org.springframework.util.StreamUtils;
-
 @Component
 public class MarkdownPrinter {
+
 	private final MarkdownRenderer renderer;
 
-	public MarkdownPrinter(MarkdownRenderer renderer) {
+	public MarkdownPrinter(@Online /* (1) */ MarkdownRenderer renderer) {
 		this.renderer = renderer;
 	}
 
@@ -27,4 +28,5 @@ public class MarkdownPrinter {
 			throw new UncheckedIOException(e);
 		}
 	}
+
 }
