@@ -1,18 +1,22 @@
 package hajiboot;
 
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 public class GitHubApiMarkdownRenderer implements MarkdownRenderer {
 
-	private final RestTemplate restTemplate;
+	private final RestClient restClient;
 
-	public GitHubApiMarkdownRenderer(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
+	public GitHubApiMarkdownRenderer(RestClient.Builder restClientBuilder) {
+		this.restClient = restClientBuilder.build();
 	}
 
 	@Override
 	public String render(String markdown) {
-		return this.restTemplate.postForObject("https://api.github.com/markdown/raw", markdown, String.class); // (1)
+		return this.restClient.post() // (1)
+				.uri("https://api.github.com/markdown/raw")
+				.body(markdown)
+				.retrieve()
+				.body(String.class);
 	}
 
 }
