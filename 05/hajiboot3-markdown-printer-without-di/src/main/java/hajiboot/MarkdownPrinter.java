@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import org.springframework.util.StreamUtils;
 
 public class MarkdownPrinter {
+
 	private final MarkdownRenderer renderer;
 
 	public MarkdownPrinter(MarkdownRenderer renderer) {
@@ -25,4 +26,5 @@ public class MarkdownPrinter {
 			throw new UncheckedIOException(e);
 		}
 	}
+
 }
