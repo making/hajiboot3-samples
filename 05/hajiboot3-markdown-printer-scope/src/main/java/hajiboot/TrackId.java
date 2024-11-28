@@ -7,9 +7,12 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope(scopeName = "prototype" /* (1) */, proxyMode = ScopedProxyMode.TARGET_CLASS /* (2) */)
+@Scope(scopeName = "prototype" /* (1) */,
+		proxyMode = ScopedProxyMode.TARGET_CLASS /* (2) */)
 public class TrackId {
+
 	private static final AtomicLong counter = new AtomicLong(0);
+
 	private final long value;
 
 	public TrackId() {
@@ -24,4 +27,5 @@ public class TrackId {
 	public String toString() {
 		return String.valueOf(this.value);
 	}
+
 }

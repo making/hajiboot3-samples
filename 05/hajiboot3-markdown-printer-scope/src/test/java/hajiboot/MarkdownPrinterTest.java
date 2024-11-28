@@ -26,11 +26,11 @@ class MarkdownPrinterTest {
 		TrackId trackId = Mockito.mock(TrackId.class);
 
 		MarkdownPrinter printer = new MarkdownPrinter(markdownRenderer, trackId);
-		InputStream stream = new ByteArrayInputStream(
-				"Markdown!".getBytes(StandardCharsets.UTF_8)); // (4)
+		InputStream stream = new ByteArrayInputStream("Markdown!".getBytes(StandardCharsets.UTF_8)); // (4)
 		printer.print(stream);
 
 		assertThat(capture.toString()).contains("Input markdown:"); // (5)
 		assertThat(capture.toString()).contains("<p>Markdown!</p>");
 	}
+
 }

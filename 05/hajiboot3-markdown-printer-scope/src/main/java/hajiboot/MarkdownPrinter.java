@@ -10,7 +10,9 @@ import org.springframework.util.StreamUtils;
 
 @Component
 public class MarkdownPrinter {
+
 	private final MarkdownRenderer renderer;
+
 	private final TrackId trackId;
 
 	public MarkdownPrinter(MarkdownRenderer renderer, TrackId trackId) {
@@ -32,4 +34,5 @@ public class MarkdownPrinter {
 			throw new UncheckedIOException(e);
 		}
 	}
+
 }
