@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MarkdownPrinterApplicationRunner implements ApplicationRunner {
+
 	private final MarkdownPrinter markdownPrinter;
 
 	public MarkdownPrinterApplicationRunner(MarkdownPrinter markdownPrinter) {
@@ -16,4 +17,5 @@ public class MarkdownPrinterApplicationRunner implements ApplicationRunner {
 	public void run(ApplicationArguments arg) throws Exception {
 		this.markdownPrinter.print(System.in);
 	}
+
 }

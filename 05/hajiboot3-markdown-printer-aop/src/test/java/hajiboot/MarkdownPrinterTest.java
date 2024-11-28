@@ -24,11 +24,11 @@ class MarkdownPrinterTest {
 		given(markdownRenderer.render(anyString())).willReturn("<p>Markdown!</p>"); // (3)
 
 		MarkdownPrinter printer = new MarkdownPrinter(markdownRenderer);
-		InputStream stream = new ByteArrayInputStream(
-				"Markdown!".getBytes(StandardCharsets.UTF_8)); // (4)
+		InputStream stream = new ByteArrayInputStream("Markdown!".getBytes(StandardCharsets.UTF_8)); // (4)
 		printer.print(stream);
 
 		assertThat(capture.toString()).contains("Input markdown:"); // (5)
 		assertThat(capture.toString()).contains("<p>Markdown!</p>");
 	}
+
 }

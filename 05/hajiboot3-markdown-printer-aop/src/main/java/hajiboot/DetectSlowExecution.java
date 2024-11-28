@@ -6,5 +6,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface DetectSlowExecution {
+
 	long threshold() default 500; // (1)
+
 }

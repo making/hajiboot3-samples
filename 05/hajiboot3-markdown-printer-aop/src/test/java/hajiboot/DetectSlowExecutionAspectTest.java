@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith({ OutputCaptureExtension.class, SpringExtension.class }) // (1)
 public class DetectSlowExecutionAspectTest {
+
 	@Autowired // (2)
 	private Sleep sleep;
 
@@ -25,8 +26,8 @@ public class DetectSlowExecutionAspectTest {
 		sleep.apply(1000L); // (3)
 		String log = capture.toString();
 		assertThat(log).contains("Detect slow execution elapsed="); // (4)
-		assertThat(log).contains(", method=public java.lang.String "
-								 + Sleep.class.getName() + ".apply(java.lang.Long), args=[1000]");
+		assertThat(log).contains(
+				", method=public java.lang.String " + Sleep.class.getName() + ".apply(java.lang.Long), args=[1000]");
 	}
 
 	@Test
@@ -39,6 +40,7 @@ public class DetectSlowExecutionAspectTest {
 	@TestConfiguration // (6)
 	@EnableAspectJAutoProxy(proxyTargetClass = true) // (7)
 	public static class Config {
+
 		@Bean
 		public DetectSlowExecutionAspect detectSlowExecutionAspectForTest() {
 			return new DetectSlowExecutionAspect();
@@ -48,9 +50,12 @@ public class DetectSlowExecutionAspectTest {
 		public Sleep sleep() {
 			return new Sleep();
 		}
+
 	}
 
-	public static class Sleep implements Function<Long, String> { // (8)
+	public static class Sleep implements Function<Long, String> {
+
+		// (8)
 		@DetectSlowExecution(threshold = 800)
 		@Override
 		public String apply(Long sleep) {
@@ -62,5 +67,7 @@ public class DetectSlowExecutionAspectTest {
 			}
 			return "Slept " + sleep + " [msec]";
 		}
+
 	}
+
 }
